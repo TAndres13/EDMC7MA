@@ -26,6 +26,8 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Introduccion
 
+
+
 Carfa de librerias y datos
 
 ```{r cars, results='hide',message = FALSE, warning=FALSE}
@@ -44,8 +46,12 @@ library(dplyr)
 library(tibble)
 
 datos <- read_csv2("r14_Sci_Qs_Webometrics.csv")
+#head(datos)
+#str(datos)
 #ecc<- read_csv2("ECC_completa_19426.csv")
 ```
+
+Utilizar el archivo r_14_Sci_Qs_Webometrics.csv que se encuentrea en la carpeta conjunto de datos utilizados en los ejemplos y ejercicioss para contruir una tabla con los promedios por país y llvaevar a cabo lo siguiente ejerrci
 
 
 # Punto 1
@@ -70,6 +76,374 @@ Repetir los ejercicios 1,2 y 3 Pero utilizando los indicadores de QS.
 # Punto 6
 
 Construir una agrupacion jerárquica por países utilizando la salida del PCA con los indicadores de QS, tipificar los grupos como en el ejemplo 7.10.1
+
+## Seleccion de los datos
+
+```{r intro 6, warning=FALSE, message=FALSE}
+datos_qs <- datos %>%
+  select(Pais,
+         QS.Ranking,
+         QS.Puntuacion,
+         QS.Reputacion.academica,
+         QS.Reputacion.entre.empleadores,
+         QS.Estudiantes.por.profesor,
+         QS.PromArticulos.por.docente,
+         QS.Citas.por.articulo,
+         QS.Docentes.con.doctorado,
+         QS.Impacto.Web)
+
+```
+
+```{r, promedios6, warning=FALSE}
+promedios_pais <- datos_qs %>%
+  group_by(Pais) %>%
+  summarise(across(everything(), mean, na.rm = TRUE))
+
+```
+
+
+
+
+```{r valroespropios6, warning=FALSE, message=FALSE}
+# Preparar datos numéricos
+datos_numericos <- promedios_pais %>%
+  select(-Pais)
+
+rownames(datos_numericos) <- promedios_pais$Pais
+
+datos_numericos_df <- as.data.frame(datos_numericos)
+rownames(datos_numericos_df) <- promedios_pais$Pais
+# Hacer ACP
+res.PCA <- PCA(datos_numericos_df, ncp = 9, graph = FALSE, scale.unit = TRUE)
+
+# Extraer y mostrar valores propios
+eig <- round(res.PCA$eig, 2)
+
+kable(eig, format = "latex", booktabs = TRUE,
+      caption = "Valores propios y varianzas del ACP de indicadores del QS") %>%
+  kable_styling(latex_options = c("striped", "scale_down", "hold_position"))
+```
+
+```{r biplot6, warning=FALSE, message=FALSE}
+fviz_pca_biplot(res.PCA,
+                label = c("var", "ind"),
+                repel = TRUE,
+                col.var = "red",
+                col.ind = "blue",
+                title = "Biplot del PCA de indicadores QS (promedios por país)")
+```
+
+```{r coord6, warning=FALSE, message=FALSE}
+# 1. Extraer las coordenadas de los países
+coord_raw <- as.data.frame(res.PCA$ind$coord)
+
+
+# 5. Generar la tabla
+
+kable(coord_raw,
+      format   = "latex",
+      booktabs = TRUE,
+      caption  = "Coordenadas de los países sobre las primeras 5 componentes del ACP de indicadores QS",
+      label    = "tab:coord_paises_qs") %>%
+  kable_styling(latex_options = c("striped", "scale_down", "hold_position"))
+```
+
+
+```{r contr6, warning=FALSE, message=FALSE}
+# 1. Extraer la matriz de contribuciones de variables
+contrib <- as.data.frame(res.PCA$var$contrib)
+
+
+
+kable(contrib,
+      format   = "latex",
+      booktabs = TRUE,
+      caption  = "Contribuciones a la varianza de los primeros factores del ACP de los indicadores de QS",
+      label    = "tab:contrib_varianza_qs") %>%
+  kable_styling(latex_options = c("striped", "scale_down", "hold_position"))
+
+```
+
+
+```{r cos26, warning=FALSE, message=FALSE}
+# 1. Extraer la matriz de cosenos cuadrados de variables
+cos2 <- as.data.frame(res.PCA$var$cos2)
+
+# 5. Generar la tabla LaTeX 
+
+
+kable(cos2,
+      format   = "latex",
+      booktabs = TRUE,
+      caption  = "Cosenos cuadrados de las variables sobre los primeros 5 factores del ACP de indicadores de QS",
+      label    = "tab:cos2_qs") %>%
+  kable_styling(latex_options = c("striped", "scale_down", "hold_position"))
+```
+
+
+
+```{r hcp6, warning=FALSE, message=FALSE}
+res.hcpc <- HCPC(res.PCA, nb.clust = -1, min = 3, max = 6, proba = 0.1, graph = FALSE)
+```
+
+
+
+```{r agru, warning=FALSE, message=FALSE}
+# Mejorar con ajustes de etiquetas y estilo base R
+plot(res.hcpc,
+     choice = "tree",
+     axes   = c(1, 2),
+     main   = "Agrupamiento Jerárquico por Países",
+     cex    = 0.8,      # tamaño de texto de etiquetas
+     cex.main = 1.2,    # tamaño del título
+     cex.axis = 0.9,    # tamaño ejes
+     cex.lab  = 1       # tamaño etiquetas de ejes
+)
+
+```
+
+```{r compgru, warning=FALSE, message=FALSE}
+
+# 1. Extraer la asignación de cada país desde HCPC
+df_clust <- res.hcpc$data.clust %>%
+  rownames_to_column("Pais") %>%    # pasa los rownames (códigos) a la columna Pais
+  select(Pais, clust)
+
+# 2. Agrupar y resumir: contar y pegar la lista de países
+tabla_composicion <- df_clust %>%
+  group_by(clust) %>%
+  summarise(
+    N_paises = n(),
+    Paises   = paste(Pais, collapse = ", ")
+  ) %>%
+  arrange(clust) %>%
+  rename(
+    Cluster    = clust,
+    `# Países` = N_paises
+  )
+
+# 3. Verificar en R
+#print(tabla_composicion)
+
+# 4. Generar tabla LaTeX
+kable(tabla_composicion,
+      format   = "latex",
+      booktabs = TRUE,
+      caption  = "Composición de los grupos resultantes del HCPC",
+      label    = "tab:composicion_grupos") %>%
+  kable_styling(latex_options = c("striped", "scale_down", "hold_position"))
+```
+
+
+```{r ca1, message=FALSE, warning=FALSE}
+
+desc1 <- as.data.frame(res.hcpc$desc.var$quanti[[1]])
+
+# Renombrar columnas con nombres más legibles
+colnames(desc1) <- c(
+         # Nombre de la variable
+  "V-test",           # Estadístico v-test
+  "Media en Grupo 1", # Media dentro del grupo
+  "Media Global",     # Media general
+  "SD en Grupo 1",    # Desviación estándar en el grupo
+  "SD Global",        # Desviación estándar global
+  "P-valor"           # Valor p de la prueba
+)
+
+# Generar la tabla en LaTeX
+kable(desc1,
+      format   = "latex",
+      booktabs = TRUE,
+      caption  = "Características principales del Grupo 1 (ACP indicadores QS)",
+      label    = "tab:desc_grupo1") %>%
+  kable_styling(latex_options = c("striped", "scale_down", "hold_position"))
+```
+
+
+```{r ca2, message=FALSE, warning=FALSE}
+desc1 <- as.data.frame(res.hcpc$desc.var$quanti[[2]])
+
+# Renombrar columnas con nombres más legibles
+colnames(desc1) <- c(
+         # Nombre de la variable
+  "V-test",           # Estadístico v-test
+  "Media en Grupo 2", # Media dentro del grupo
+  "Media Global",     # Media general
+  "SD en Grupo 2",    # Desviación estándar en el grupo
+  "SD Global",        # Desviación estándar global
+  "P-valor"           # Valor p de la prueba
+)
+
+# Generar la tabla en LaTeX
+kable(desc1,
+      format   = "latex",
+      booktabs = TRUE,
+      caption  = "Características principales del Grupo 2 (ACP indicadores QS)",
+      label    = "tab:desc_grupo2") %>%
+  kable_styling(latex_options = c("striped", "scale_down", "hold_position"))
+```
+
+
+```{r ca3, message=FALSE, warning=FALSE}
+desc1 <- as.data.frame(res.hcpc$desc.var$quanti[[3]])
+
+# Renombrar columnas con nombres más legibles
+colnames(desc1) <- c(
+         # Nombre de la variable
+  "V-test",           # Estadístico v-test
+  "Media en Grupo 3", # Media dentro del grupo
+  "Media Global",     # Media general
+  "SD en Grupo 3",    # Desviación estándar en el grupo
+  "SD Global",        # Desviación estándar global
+  "P-valor"           # Valor p de la prueba
+)
+
+# Generar la tabla en LaTeX
+kable(desc1,
+      format   = "latex",
+      booktabs = TRUE,
+      caption  = "Características principales del Grupo 3 (ACP indicadores QS)",
+      label    = "tab:desc_grupo2") %>%
+  kable_styling(latex_options = c("striped", "scale_down", "hold_position"))
+
+```
+
+```{r ca4, message=FALSE, warning=FALSE}
+desc1 <- as.data.frame(res.hcpc$desc.var$quanti[[4]])
+
+# Renombrar columnas con nombres más legibles
+colnames(desc1) <- c(
+         # Nombre de la variable
+  "V-test",           # Estadístico v-test
+  "Media en Grupo 4", # Media dentro del grupo
+  "Media Global",     # Media general
+  "SD en Grupo 4",    # Desviación estándar en el grupo
+  "SD Global",        # Desviación estándar global
+  "P-valor"           # Valor p de la prueba
+)
+
+# Generar la tabla en LaTeX
+kable(desc1,
+      format   = "latex",
+      booktabs = TRUE,
+      caption  = "Características principales del Grupo 4 (ACP indicadores QS)",
+      label    = "tab:desc_grupo5") %>%
+  kable_styling(latex_options = c("striped", "scale_down", "hold_position"))
+
+```
+
+
+```{r ca5, message=FALSE, warning=FALSE}
+desc1 <- as.data.frame(res.hcpc$desc.var$quanti[[5]])
+
+# Renombrar columnas con nombres más legibles
+colnames(desc1) <- c(
+         # Nombre de la variable
+  "V-test",           # Estadístico v-test
+  "Media en Grupo 5", # Media dentro del grupo
+  "Media Global",     # Media general
+  "SD en Grupo 5",    # Desviación estándar en el grupo
+  "SD Global",        # Desviación estándar global
+  "P-valor"           # Valor p de la prueba
+)
+
+# Generar la tabla en LaTeX
+kable(desc1,
+      format   = "latex",
+      booktabs = TRUE,
+      caption  = "Características principales del Grupo 5 (ACP indicadores QS)",
+      label    = "tab:desc_grupo5") %>%
+  kable_styling(latex_options = c("striped", "scale_down", "hold_position"))
+
+```
+
+
+
+
+
+
+```{r fplt, message=FALSE, warning=FALSE}
+plot.HCPC(res.hcpc, axes = c(1,2), choice = "map")
+```
+
+```{r dpl1, warning=FALSE, message=FALSE}
+plot.HCPC(res.hcpc, choice = "map", axes = c(1, 2), title = "Distribución de los grupos sobre el plano 1-2 (ACP indicadores QS)")
+
+```
+
+```{r dpl3, warning=FALSE, message=FALSE}
+plot.HCPC(res.hcpc, choice = "map", axes = c(3, 4), title = "Distribución de los grupos sobre el plano 3-4 (ACP indicadores QS)")
+```
+
+```{r dpl5, warning=FALSE, message=FALSE}
+plot.HCPC(res.hcpc, choice = "map", axes = c(5, 6), title = "Distribución de los grupos sobre el plano 5-6 (ACP indicadores QS)")
+```
+
+
+```{r dlg12, warning=FALSE, message=FALSE}
+fviz_cluster(res.hcpc,
+             geom = c("point", "text"),     # Puntos y texto
+             pointsize = 2,
+             labelsize = 8,
+             ellipse.type = "convex",
+             palette = "Dark2",
+             repel = TRUE,
+             show.clust.cent = TRUE,
+             axes = c(1, 2),
+             ggtheme = theme_minimal(),
+             main = "Distribución de los grupos en el plano 1-2\n(ACP de indicadores QS)") +
+  theme(
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.5),
+    legend.title = element_text(size = 12),
+    legend.text = element_text(size = 10),
+    axis.title = element_text(size = 12),
+    axis.text = element_text(size = 10)
+  )
+```
+
+```{rdlg34, warning=FALSE, message=FALSE}
+fviz_cluster(res.hcpc,
+             geom = c("point", "text"),     # Puntos y texto
+             pointsize = 2,
+             labelsize = 8,
+             ellipse.type = "convex",
+             palette = "Dark2",
+             repel = TRUE,
+             show.clust.cent = TRUE,
+             axes = c(3, 4),
+             ggtheme = theme_minimal(),
+             main = "Distribución de los grupos en el plano 3-4\n(ACP de indicadores QS)") +
+  theme(
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.5),
+    legend.title = element_text(size = 12),
+    legend.text = element_text(size = 10),
+    axis.title = element_text(size = 12),
+    axis.text = element_text(size = 10)
+  )
+```
+
+
+```{r dlg56, warning=FALSE, message=FALSE}
+fviz_cluster(res.hcpc,
+             geom = c("point", "text"),     # Puntos y texto
+             pointsize = 2,
+             labelsize = 8,
+             ellipse.type = "convex",
+             palette = "Dark2",
+             repel = TRUE,
+             show.clust.cent = TRUE,
+             axes = c(5, 6),
+             ggtheme = theme_minimal(),
+             main = "Distribución de los grupos en el plano 5-6\n(ACP de indicadores QS)") +
+  theme(
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.5),
+    legend.title = element_text(size = 12),
+    legend.text = element_text(size = 10),
+    axis.title = element_text(size = 12),
+    axis.text = element_text(size = 10)
+  )
+```
+
 
 # Punto 7 
 
