@@ -1,0 +1,76 @@
+---
+title: "Laboratorio 4 Metodos de Agrupamiento"
+author: 
+  Grupo 6
+output:
+  pdf_document:
+    latex_engine: xelatex
+    keep_tex: true
+date: 
+---
+
+## Integrantes
+
+  - Edwin Sanchez
+  - Stephanie Tamayo
+  - Andres Felipe Torres
+  - Fredy Urrea
+  - Sergio Velasquez
+  - Manuel Espitia
+  
+```{r setup, include=FALSE, warning=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+# Introduccion
+
+Carfa de librerias y datos
+
+```{r cars, results='hide',message = FALSE, warning=FALSE}
+
+library("FactoMineR")
+library("dplyr")
+library("kableExtra")
+library(readxl)
+library(FactoMineR)
+library(factoextra)
+library(kableExtra)
+library(readr)
+library(knitr)
+library(tidyr)
+library(dplyr)
+library(tibble)
+
+datos <- read_csv2("r14_Sci_Qs_Webometrics.csv")
+#ecc<- read_csv2("ECC_completa_19426.csv")
+```
+
+
+# Punto 1
+Construir una agrupación de los países con los indicadores de Scimago por el método de K- medias seleccionando el número de grupos K con el indicador de Carlinski-Hrabasz y tipificar los grupos obtenidos por los promedios y las varianzas como en el ejenmplo 7.4.1
+
+
+# Punto 2 
+Construir una agrupación de los países con los indicadores del Scimago por el método de K - medias seleccionado el números de grupos K con el indicador de Hartigan y tipificar los grupos obtenidos por los promedios y las varianzas con en el ejemplo 7.5.1
+
+# Punto 3
+
+Comparar las agrupaciones obtenidas en los ejercicios 1 y 2 y explicar las diferencias, si las hat, tanto en número de grupos como en países que quedaron en cada ejercicio
+
+# Punto 4
+
+Repetir los ejercicios 1,2 y 3 Pero utilizando los indicadores de QS.
+
+# Punto 5 
+
+ Construir una agrupación jerarquica por países utilizando la salida del PCA con los indicadores del Scimago, tipificar los grupos con en el ejemplo 7.10.1
+ 
+# Punto 6
+
+Construir una agrupacion jerárquica por países utilizando la salida del PCA con los indicadores de QS, tipificar los grupos como en el ejemplo 7.10.1
+
+# Punto 7 
+
+Comparar las agrupaciones de los ejercicios y explicar las diferencias, si las hat, tanto en número de grupos como en países que quedaron en cada ejercicio
