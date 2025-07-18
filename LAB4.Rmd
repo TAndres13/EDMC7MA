@@ -94,6 +94,7 @@ datos_qs <- datos %>%
 
 ```
 
+## Promedio de datos
 ```{r, promedios6, warning=FALSE}
 promedios_pais <- datos_qs %>%
   group_by(Pais) %>%
@@ -102,7 +103,7 @@ promedios_pais <- datos_qs %>%
 ```
 
 
-
+## Ejecucion de ACP e interpretacion de valores propios y varianza explicada
 
 ```{r valroespropios6, warning=FALSE, message=FALSE}
 # Preparar datos numéricos
@@ -124,6 +125,20 @@ kable(eig, format = "latex", booktabs = TRUE,
   kable_styling(latex_options = c("striped", "scale_down", "hold_position"))
 ```
 
+La Tabla 1 muestra los valores propios (eigenvalues) y las porcentajes de varianza explicada, tanto individuales como acumuladas, para cada uno de los nueve componentes principales obtenidos a partir del Análisis de Componentes Principales (ACP) aplicado a los indicadores del ranking QS.
+
+El primer componente explica el 36.39% de la varianza total de los datos, lo que indica que este eje concentra una gran parte de la información contenida en las variables originales. El segundo componente agrega un 24.67% adicional, por lo que juntos, los dos primeros componentes explican aproximadamente el 61.06% de la varianza total, lo cual ya representa una reducción significativa de la dimensión del problema manteniendo una buena cantidad de información.
+
+Los primeros cuatro componentes alcanzan una varianza acumulada de 89.68%, lo cual es considerado muy satisfactorio en análisis exploratorios, ya que permite visualizar los datos en un espacio de menor dimensión (2D o 3D) sin una pérdida considerable de información.
+
+A pesar de que se calcularon los nueve componentes posibles (tantos como variables originales), a partir del componente 5 en adelante, la varianza explicada por cada componente es bastante baja (menor al 7%), indicando que su aporte a la explicación de la estructura de los datos es limitado.
+
+Con base en esta información, decidimos trabajar inicialmente con los primeros seis componentes, que explican en conjunto el 98.20% de la varianza total. Sin embargo, dado que los componentes 5 y 6 apenas agregan un 6.53% y 1.99% respectivamente, una reducción a cuatro componentes principales podría ser más eficiente, conservando casi el 90% de la varianza total y simplificando aún más el análisis.
+
+Esta selección permite un equilibrio adecuado entre simplificación del modelo y preservación de la información relevante, lo que resulta fundamental para la interpretación de los grupos (clusters) posteriores y para la visualización en planos factoriales.
+
+
+## Biplot
 ```{r biplot6, warning=FALSE, message=FALSE}
 fviz_pca_biplot(res.PCA,
                 label = c("var", "ind"),
@@ -133,60 +148,213 @@ fviz_pca_biplot(res.PCA,
                 title = "Biplot del PCA de indicadores QS (promedios por país)")
 ```
 
+El gráfico muestra un biplot correspondiente a los dos primeros componentes principales obtenidos del Análisis de Componentes Principales (ACP) aplicado a los promedios nacionales de los indicadores del ranking QS. El eje horizontal (Dim1) explica el 36.4% de la varianza total, mientras que el eje vertical (Dim2) representa un 24.7% adicional, sumando entre ambos un 61.1% de la variabilidad de los datos originales.
+
+En este biplot:
+
+Los puntos azules representan países, proyectados en el nuevo espacio definido por los dos primeros componentes.
+
+Las flechas rojas representan los vectores de los indicadores QS, que indican la dirección y fuerza de su contribución a la varianza explicada.
+
+Interpretación de los ejes
+Componente 1 (Dim1) parece estar fuertemente influido por indicadores como:
+
+- QS.Puntuación
+
+- QS.Docentes con doctorado
+
+- QS.Promedio de artículos por docente
+
+- QS.Impacto web
+
+en contraste con QS.Ranking (que apunta en la dirección opuesta, indicando que un mejor ranking numérico -menor valor– se asocia negativamente con este componente).
+
+Esto sugiere que Dim1 refleja una dimensión de capacidad investigativa, calidad docente y visibilidad, donde los países más hacia la derecha (por ejemplo, Chile, Puerto Rico, Brasil) presentan mejores resultados en estos aspectos.
+
+Componente 2 (Dim2) está más relacionado con:
+
+- QS.Reputación académica
+
+- QS.Reputación entre empleadores
+
+- QS.Estudiante por profesor
+
+Estos factores definen una dimensión de prestigio percibido y atención individual al estudiante, lo que explica la posición destacada de países como Costa Rica y Colombia, más hacia la parte superior del gráfico.
+
+Agrupación de países
+Países como Costa Rica (CRI) y Colombia (COL) se ubican en la región superior derecha del gráfico, lo que indica buenos desempeños tanto en indicadores de prestigio como en métricas duras de desempeño.
+
+Chile (CHL) y Puerto Rico (PRI) se asocian principalmente a altos niveles de producción académica e indicadores institucionales, más alineados con el componente 1.
+
+Brasil (BRA) destaca especialmente por sus docentes con doctorado, aunque su reputación relativa parece menor (proyectado hacia abajo).
+
+En cambio, países como Ecuador (ECU), Bolivia (BOL) y Panamá (PAN) aparecen en la región izquierda del gráfico, lo que sugiere menores puntuaciones en la mayoría de los indicadores, incluyendo reputación y producción académica.
+
+Algunos países, como Argentina (ARG) y Cuba (CUB), se ubican cerca del centro, indicando un desempeño intermedio o balanceado, sin destacar fuertemente en una dirección específica.
+
+Relación entre variables
+Las flechas que apuntan en direcciones similares están positivamente correlacionadas (por ejemplo, QS.Puntuación y QS.Impacto Web).
+
+Flechas en direcciones opuestas indican correlaciones negativas, como ocurre entre QS.Ranking y la mayoría de los demás indicadores.
+
+La longitud de las flechas indica la contribución del indicador al plano mostrado: flechas más largas como las de QS.Puntuación o QS.Docentes con doctorado tienen mayor peso en la construcción de los componentes visualizados.
+
+
+
+```{r biplot634, warning=FALSE, message=FALSE}
+fviz_pca_biplot(res.PCA,
+                label = c("var", "ind"),
+                axes   = c(3, 4),
+                repel = TRUE,
+                col.var = "red",
+                col.ind = "blue",
+                title = "Biplot del PCA de indicadores QS (promedios por país)")
+```
+
+El gráfico presenta un biplot que muestra la proyección de los promedios por país en el espacio definido por el tercer (Dim3) y cuarto (Dim4) componente principal del Análisis de Componentes Principales (ACP) sobre los indicadores del ranking QS. En conjunto, estos dos componentes explican aproximadamente un 28.6% de la variabilidad total: 17.4% por parte de Dim3 y 11.2% por parte de Dim4.
+
+En este biplot:
+
+Los puntos azules representan los países, posicionados de acuerdo con su proyección en los componentes 3 y 4.
+
+Las flechas rojas representan las variables originales (indicadores QS), indicando tanto su dirección como su contribución relativa a estos componentes.
+
+Dimensión 3 (Dim3)
+El eje horizontal (Dim3) está influenciado por varios indicadores, pero destacan:
+
+
+- QS.Estudiante.por.profesor
+
+- QS.Ranking (en dirección opuesta) en menor medida
+
+Esto sugiere que Dim3 refleja un eje de productividad y atención al estudiante, donde valores altos están asociados con mayor producción académica por docente y menor número de estudiantes por profesor (mejor atención), mientras que valores negativos tienden a indicar peores posiciones en el ranking (números mayores).
+
+Dimensión 4 (Dim4)
+El eje vertical (Dim4) está principalmente asociado con:
+
+- QS.Citas.por.Artículo
+
+- En menor medida, con QS.Impacto.Web
+
+Esto puede interpretarse como una dimensión de visibilidad e impacto académico, donde valores positivos representan países cuyas instituciones tienen un mayor número de citas por artículo, reflejando reconocimiento y alcance de la producción científica.
+
+Interpretación por países
+Costa Rica (CRI) y Paraguay (PY) se destacan en la parte superior derecha del gráfico, lo que indica un buen desempeño en indicadores como citas por artículo, y puntuación QS.
+
+Uruguay (URY) también aparece con una fuerte proyección positiva en Dim3, sugiriendo buen desempeño en promedio de artículos por docente y estudiantes por profesor.
+
+Bolivia (BOL) y Ecuador (ECU) presentan valores positivos sobre Dim4, indicando un buen posicionamiento en cuanto a citas por artículo o visibilidad, a pesar de que no destaquen en otros indicadores.
+
+Por otro lado, Venezuela (VEN), Cuba (CUB) y Colombia (COL) tienen coordenadas negativas en ambos componentes, lo que indica menores valores relativos en estos indicadores.
+
+Argentina (ARG), México (MEX) y Panamá (PAN) se encuentran cerca del origen, lo que indica un perfil más neutral o balanceado en relación con estas dimensiones específicas del PCA.
+
+Relación entre variables
+QS.Citas.por.Artículo está casi exclusivamente alineada con Dim4, lo que refuerza su papel como indicador de impacto académico.
+
+Algunas variables como QS.Reputación.académica o QS.Impacto.Web tienen una menor contribución a estos componentes, como se aprecia en la corta longitud de sus vectores.
+
+## Coordenadas
+
 ```{r coord6, warning=FALSE, message=FALSE}
-# 1. Extraer las coordenadas de los países
-coord_raw <- as.data.frame(res.PCA$ind$coord)
+# 1. Extraer las coordenadas de los países (primeras 4 dimensiones)
+coord_raw <- as.data.frame(res.PCA$ind$coord)[, 1:4]
 
+# 2. Redondear a 2 decimales
+coord_raw <- round(coord_raw, 2)
 
-# 5. Generar la tabla
-
+# 3. Generar la tabla
 kable(coord_raw,
       format   = "latex",
       booktabs = TRUE,
-      caption  = "Coordenadas de los países sobre las primeras 5 componentes del ACP de indicadores QS",
+      caption  = "Coordenadas de los países sobre las primeras 4 componentes del ACP de indicadores QS",
       label    = "tab:coord_paises_qs") %>%
   kable_styling(latex_options = c("striped", "scale_down", "hold_position"))
 ```
 
 
+La Tabla \ref{tab:coord_paises_qs} presenta las coordenadas de los países latinoamericanos sobre las primeras cuatro componentes principales obtenidas del Análisis de Componentes Principales (ACP) aplicado a los indicadores QS. Estas coordenadas reflejan la posición relativa de cada país en el nuevo espacio reducido, sintetizando la información multivariada de los indicadores originales.
+
+La Dimensión 1 (Dim.1) concentra la mayor parte de la varianza explicada por estas cuatro dimensiones, y permite observar una clara separación entre países como Brasil (2.56), Puerto Rico (2.90) y Chile (1.62), que tienen valores positivos elevados, indicando un mejor desempeño relativo en los indicadores que más contribuyen a esta dimensión. Por el contrario, países como Panamá (-3.26), Uruguay (-2.48) y Bolivia (-2.09) se ubican en el extremo opuesto, lo que sugiere un perfil marcadamente diferente, posiblemente asociado a puntuaciones más bajas en esos indicadores.
+
+En la Dimensión 2 (Dim.2), se destacan Costa Rica (3.63) y Venezuela (2.21) con valores positivos altos, lo que indica que capturan una variabilidad distinta a la de Dim.1, probablemente relacionada con indicadores específicos como citas por artículo o impacto web. Por su parte, México (-2.30) y Puerto Rico (-1.67) tienen valores negativos significativos en esta dimensión.
+
+Las Dimensiones 3 y 4 (Dim.3 y Dim.4) explican menor proporción de la variabilidad total, pero aún aportan información relevante sobre las diferencias estructurales entre países. Por ejemplo, Uruguay (1.88) y Puerto Rico (1.40) presentan coordenadas positivas altas en Dim.3, mientras que países como Brasil (-2.52) y Bolivia (-1.73) se ubican en valores negativos, reflejando distintos patrones en indicadores como promedio de artículos por docente o porcentaje de docentes con doctorado. En Dim.4, Bolivia (2.04), Puerto Rico (1.48) y Ecuador (1.15) destacan por sus valores positivos, lo que sugiere que esta dimensión podría estar capturando variabilidad en indicadores secundarios pero aún discriminantes.
+
 ```{r contr6, warning=FALSE, message=FALSE}
 # 1. Extraer la matriz de contribuciones de variables
-contrib <- as.data.frame(res.PCA$var$contrib)
+contrib <- as.data.frame(res.PCA$var$contrib)[, 1:4]
 
-
+contrib <- round(contrib, 2)
 
 kable(contrib,
       format   = "latex",
       booktabs = TRUE,
-      caption  = "Contribuciones a la varianza de los primeros factores del ACP de los indicadores de QS",
+      caption  = "Contribuciones a la varianza de los primeros 4 factores del ACP de los indicadores de QS",
       label    = "tab:contrib_varianza_qs") %>%
   kable_styling(latex_options = c("striped", "scale_down", "hold_position"))
 
 ```
 
 
+La Tabla \ref{tab:contribuciones_qs} presenta las contribuciones porcentuales de cada indicador QS a la varianza explicada por las primeras cuatro dimensiones del Análisis de Componentes Principales (ACP). Estas contribuciones permiten interpretar el significado de cada dimensión en función de los indicadores originales, proporcionando así una guía para entender los factores latentes que estructuran los datos.
+
+Dimensión 1 (Dim.1): Calidad académica y producción científica
+La primera dimensión concentra las mayores contribuciones de QS.Puntuación (21.77%), QS.PromArtículos.por.docente (21.28%), QS.Impacto.Web (17.94%), y QS.Docentes.con.doctorado (15.11%). Esta dimensión parece capturar un componente general de rendimiento académico y productividad investigativa, asociado a la puntuación global del ranking QS, el impacto digital y la formación del cuerpo docente.
+
+Dimensión 2 (Dim.2): Reputación institucional
+En la segunda dimensión destacan QS.Reputación.entre.empleadores (31.89%), QS.Reputación.académica (23.71%) y QS.Docentes.con.doctorado (20.14%), sugiriendo que esta dimensión agrupa aspectos vinculados a la imagen externa de la institución, tanto desde la percepción académica como desde el sector laboral. Esta dimensión también representa el prestigio institucional más allá de métricas cuantitativas.
+
+Dimensión 3 (Dim.3): Relación docente-estudiante y visibilidad académica
+La tercera dimensión está dominada por QS.Estudiantes.por.profesor (45.56%), junto con una contribución notable de QS.Impacto.Web (8.43%). Esto sugiere que esta dimensión representa factores estructurales del entorno de enseñanza, posiblemente asociados al tamaño relativo del cuerpo docente y la eficiencia educativa.
+
+Dimensión 4 (Dim.4): Citación y desempeño académico relativo
+La cuarta dimensión presenta una contribución sobresaliente de QS.Citas.por.artículo (48.99%), lo cual indica que esta dimensión se relaciona principalmente con la visibilidad e impacto de la producción científica. También contribuyen en menor medida QS.Estudiantes.por.profesor (20.87%) y QS.Impacto.Web (15.31%), lo que sugiere una dimensión complementaria centrada en la influencia académica a nivel internacional.
+
 ```{r cos26, warning=FALSE, message=FALSE}
 # 1. Extraer la matriz de cosenos cuadrados de variables
-cos2 <- as.data.frame(res.PCA$var$cos2)
+cos2 <- as.data.frame(res.PCA$var$cos2)[, 1:4]
 
 # 5. Generar la tabla LaTeX 
-
+cos2 <- round(cos2, 2)
 
 kable(cos2,
       format   = "latex",
       booktabs = TRUE,
-      caption  = "Cosenos cuadrados de las variables sobre los primeros 5 factores del ACP de indicadores de QS",
+      caption  = "Cosenos cuadrados de las variables sobre los primeros 4 factores del ACP de indicadores de QS",
       label    = "tab:cos2_qs") %>%
   kable_styling(latex_options = c("striped", "scale_down", "hold_position"))
 ```
 
 
 
+Calidad de representación de los indicadores QS en los primeros factores
+La Tabla \ref{tab:cosenos_qs} presenta los cosenos cuadrados (cos²) de cada variable respecto a las primeras cuatro componentes principales del Análisis de Componentes Principales (ACP). El coseno cuadrado representa la proporción de la varianza de cada variable que es explicada por cada componente, y se interpreta como una medida de calidad de representación de la variable en ese plano factorial.
+
+Variables mejor representadas en la primera dimensión
+Las variables QS.Puntuación (0.71), QS.PromArtículos.por.docente (0.70), QS.Ranking (0.60) y QS.Impacto.Web (0.59) muestran altos cos² sobre la primera dimensión, lo que confirma que están fuertemente asociadas al componente de desempeño académico general y producción científica ya identificado previamente.
+
+Variables dominantes en la segunda dimensión
+La Reputación entre empleadores (0.71) y la Reputación académica (0.53) presentan sus mayores cos² en la segunda dimensión, lo que indica que esta componente captura especialmente aspectos de percepción externa e institucional. La variable Docentes con doctorado también tiene una carga importante compartida entre la primera y segunda dimensión (0.49 y 0.45, respectivamente), reforzando su doble vínculo con desempeño y prestigio.
+
+Variables representadas por la tercera dimensión
+La variable Estudiantes por profesor presenta un cos² muy elevado en la tercera dimensión (0.72), lo que indica que este componente está fuertemente determinado por factores estructurales del entorno educativo. De forma secundaria, Citas por artículo (0.34) también se relaciona con esta dimensión.
+
+Variables asociadas a la cuarta dimensión
+La variable más representada en la cuarta dimensión es Citas por artículo (0.49), lo que indica que esta dimensión se refiere principalmente al impacto de la producción académica. También tiene cierta influencia la variable Estudiantes por profesor (0.21).
+
+
+## Agrupación de países con HCPC
+Se aplicó el método HCPC (Clustering Jerárquico sobre Componentes Principales) para agrupar los países según sus características en los indicadores QS. El análisis se realizó sobre los resultados del ACP, lo que permite trabajar con una versión reducida y más clara de la información.
+
+El número de grupos se determinó automáticamente por el método, considerando entre 3 y 6 posibles clústeres, y utilizando un nivel de significancia del 10% para evaluar la estabilidad de las agrupaciones. Esto permitió identificar países con perfiles similares, facilitando su comparación.
+
 ```{r hcp6, warning=FALSE, message=FALSE}
 res.hcpc <- HCPC(res.PCA, nb.clust = -1, min = 3, max = 6, proba = 0.1, graph = FALSE)
 ```
 
 
+## Dendograma
 
 ```{r agru, warning=FALSE, message=FALSE}
 # Mejorar con ajustes de etiquetas y estilo base R
@@ -201,6 +369,21 @@ plot(res.hcpc,
 )
 
 ```
+
+Dendrograma del Agrupamiento Jerárquico
+La gráfica muestra el dendrograma resultante del análisis de agrupamiento jerárquico (HCPC) aplicado a los países según los indicadores QS.
+
+En ella se identifican cinco grupos de países, representados por colores distintos. Estos grupos reúnen países con perfiles similares en términos de calidad educativa y desempeño en los indicadores analizados. Por ejemplo:
+
+- Grupo rojo: incluye a Bolivia y Ecuador, países con características similares que podrían reflejar puntajes más bajos en varios indicadores.
+
+
+- Grupo verde: agrupa a Chile, Argentina, Venezuela y Colombia, que podrían compartir un perfil intermedio o equilibrado en los distintos factores.
+
+La distancia vertical entre ramas indica el nivel de similitud entre los países: mientras más baja es la unión, mayor es la semejanza. Esto permite visualizar qué países comparten características comunes y cuáles se diferencian claramente del resto.
+
+
+## Composicion de lo grupos
 
 ```{r compgru, warning=FALSE, message=FALSE}
 
@@ -233,6 +416,21 @@ kable(tabla_composicion,
       label    = "tab:composicion_grupos") %>%
   kable_styling(latex_options = c("striped", "scale_down", "hold_position"))
 ```
+
+
+Composición de los grupos del análisis HCPC
+La Tabla 5 presenta la composición de los cinco grupos resultantes del análisis de clustering jerárquico con análisis de componentes principales (HCPC), aplicado a los indicadores QS. Cada clúster agrupa países con perfiles similares según sus resultados en los factores principales del ACP.
+
+Grupo 1: Incluye a Panamá, Paraguay y Uruguay. Estos países comparten características intermedias o balanceadas en los indicadores QS.
+
+Grupo 2: Formado por Bolivia y Ecuador, posiblemente los países con los niveles más bajos en varios indicadores, lo que los diferencia claramente del resto.
+
+Grupo 3: Es el grupo más numeroso, con siete países (Argentina, Chile, Colombia, Cuba, México, Perú y Venezuela), lo que sugiere una región con perfiles educativos relativamente parecidos, probablemente con desempeño intermedio-alto en algunos factores.
+
+Grupo 4: Compuesto únicamente por Costa Rica, lo que indica que este país presenta un perfil educativo particular y distintivo frente al resto.
+
+Grupo 5: Incluye a Brasil y Puerto Rico, países que podrían destacar por su puntuación en ciertos indicadores específicos, como reputación académica o producción científica.
+
 
 
 ```{r ca1, message=FALSE, warning=FALSE}
