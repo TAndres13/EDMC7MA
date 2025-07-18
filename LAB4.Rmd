@@ -431,12 +431,14 @@ Grupo 4: Compuesto únicamente por Costa Rica, lo que indica que este país pres
 
 Grupo 5: Incluye a Brasil y Puerto Rico, países que podrían destacar por su puntuación en ciertos indicadores específicos, como reputación académica o producción científica.
 
+## Carateristicas pricnipales de los grupos
 
 
+### Grupo 1
 ```{r ca1, message=FALSE, warning=FALSE}
 
 desc1 <- as.data.frame(res.hcpc$desc.var$quanti[[1]])
-
+desc1 <- round(desc1, 2)
 # Renombrar columnas con nombres más legibles
 colnames(desc1) <- c(
          # Nombre de la variable
@@ -458,11 +460,23 @@ kable(desc1,
 ```
 
 
-```{r ca2, message=FALSE, warning=FALSE}
-desc1 <- as.data.frame(res.hcpc$desc.var$quanti[[2]])
+Análisis de las características principales del Grupo 1
 
+La Tabla 6 presenta las variables cuantitativas más relevantes que caracterizan al Grupo 1, según el análisis de clasificación jerárquica sobre los factores del análisis de componentes principales (ACP) de los indicadores QS. Se incluyen medidas de tendencia central y dispersión, así como el estadístico V-test y el valor p asociado, que indican la significancia de cada variable en la definición del grupo.
+
+Se observa que la variable QS.Estudiantes.por.profesor presenta un V-test positivo (2.31) y un valor p de 0.02, lo que indica que este grupo se distingue por tener una relación estudiantes/profesor significativamente mayor que la media general (71.51 frente a 47.51). Esta característica puede estar asociada a instituciones con menor capacidad docente relativa.
+
+Por el contrario, variables como QS.Puntuación, QS.Docentes.con.doctorado, QS.PromArtículos.por.docente y QS.Impacto.Web muestran V-tests negativos, lo que implica que el Grupo 1 presenta valores inferiores a la media general en estos aspectos. Especialmente relevante es el caso de QS.Impacto.Web, con un V-test de -3.10 y un valor p < 0.01, lo cual sugiere un menor posicionamiento o visibilidad en línea de las instituciones pertenecientes a este grupo.
+
+En resumen, el Grupo 1 se caracteriza principalmente por una mayor cantidad de estudiantes por docente y por desempeños inferiores al promedio en indicadores relacionados con calidad académica, investigación y visibilidad digital, siendo estas diferencias estadísticamente significativas en varios casos.
+
+### Grupo 2
+
+```{r ca2, message=FALSE, warning=FALSE}
+desc2 <- as.data.frame(res.hcpc$desc.var$quanti[[2]])
+desc2 <- round(desc2, 2)
 # Renombrar columnas con nombres más legibles
-colnames(desc1) <- c(
+colnames(desc2) <- c(
          # Nombre de la variable
   "V-test",           # Estadístico v-test
   "Media en Grupo 2", # Media dentro del grupo
@@ -473,7 +487,7 @@ colnames(desc1) <- c(
 )
 
 # Generar la tabla en LaTeX
-kable(desc1,
+kable(desc2,
       format   = "latex",
       booktabs = TRUE,
       caption  = "Características principales del Grupo 2 (ACP indicadores QS)",
@@ -482,11 +496,24 @@ kable(desc1,
 ```
 
 
-```{r ca3, message=FALSE, warning=FALSE}
-desc1 <- as.data.frame(res.hcpc$desc.var$quanti[[3]])
+Análisis de las características principales del Grupo 2
 
+La Tabla 7 muestra las variables cuantitativas más destacadas que definen al Grupo 2 en el análisis de clasificación jerárquica sobre componentes principales. Este grupo se compone de países cuyas universidades presentan un perfil diferenciado respecto al promedio general.
+
+En primer lugar, se observa que el indicador QS.Ranking tiene un V-test positivo de 1.97 y un valor p de 0.05, lo que indica que las instituciones de este grupo ocupan posiciones más bajas en el ranking QS (valores numéricos más altos corresponden a peor posición), en comparación con el promedio (106.33 frente a 79.63). Esto sugiere un menor reconocimiento internacional.
+
+Además, los indicadores QS.Reputación académica, QS.Puntuación y QS.Estudiantes por profesor presentan V-tests negativos, lo cual indica que las instituciones de este grupo tienen valores por debajo de la media global en estos aspectos. En particular, QS.Estudiantes por profesor muestra una diferencia significativa (V-test = -2.21, p = 0.03), con una media de 18.15 frente a 47.51, lo que refleja una mayor concentración de docentes por estudiante, asociada a mejor atención académica.
+
+En resumen, el Grupo 2 está compuesto por universidades que, a pesar de tener un menor posicionamiento general en el ranking QS, destacan por una proporción docente/estudiante favorable, aunque presentan debilidades en reputación académica y puntuación global.
+
+
+### Grupo 3
+
+```{r ca3, message=FALSE, warning=FALSE}
+desc3 <- as.data.frame(res.hcpc$desc.var$quanti[[3]])
+desc3 <- round(desc3, 2)
 # Renombrar columnas con nombres más legibles
-colnames(desc1) <- c(
+colnames(desc3) <- c(
          # Nombre de la variable
   "V-test",           # Estadístico v-test
   "Media en Grupo 3", # Media dentro del grupo
@@ -497,7 +524,7 @@ colnames(desc1) <- c(
 )
 
 # Generar la tabla en LaTeX
-kable(desc1,
+kable(desc3,
       format   = "latex",
       booktabs = TRUE,
       caption  = "Características principales del Grupo 3 (ACP indicadores QS)",
@@ -506,11 +533,24 @@ kable(desc1,
 
 ```
 
-```{r ca4, message=FALSE, warning=FALSE}
-desc1 <- as.data.frame(res.hcpc$desc.var$quanti[[4]])
+Análisis de las características principales del Grupo 3
 
+La Tabla 8 presenta los indicadores más representativos del Grupo 3, conformado por países cuyas universidades muestran un perfil mixto en cuanto a reputación e impacto académico.
+
+El indicador QS.Reputación académica presenta un V-test positivo de 1.76, con un valor p de 0.08, lo que sugiere que, en promedio, las universidades de este grupo son mejor valoradas académicamente (69.26) que el promedio general (62.05), aunque esta diferencia no es estadísticamente significativa al nivel del 5%.
+
+Por otro lado, QS.Citas por artículo muestra un V-test negativo y significativo de -2.79 (p = 0.01), lo cual indica que estas universidades tienen un menor impacto de sus publicaciones científicas en comparación con el promedio global (52.47 frente a 69.69).
+
+En conjunto, el Grupo 3 se caracteriza por tener universidades con buena reputación académica pero menor visibilidad científica en términos de citas por publicación. Esto podría reflejar instituciones reconocidas por su tradición o calidad docente, pero con menor producción o proyección en investigación.
+
+
+### Grupo 4
+
+```{r ca4, message=FALSE, warning=FALSE}
+desc4 <- as.data.frame(res.hcpc$desc.var$quanti[[4]])
+desc4 <- round(desc4, 2)
 # Renombrar columnas con nombres más legibles
-colnames(desc1) <- c(
+colnames(desc4) <- c(
          # Nombre de la variable
   "V-test",           # Estadístico v-test
   "Media en Grupo 4", # Media dentro del grupo
@@ -521,7 +561,7 @@ colnames(desc1) <- c(
 )
 
 # Generar la tabla en LaTeX
-kable(desc1,
+kable(desc4,
       format   = "latex",
       booktabs = TRUE,
       caption  = "Características principales del Grupo 4 (ACP indicadores QS)",
@@ -530,12 +570,25 @@ kable(desc1,
 
 ```
 
+Análisis de las características principales del Grupo 4
+
+La Tabla 9 muestra los indicadores que caracterizan al Grupo 4, conformado por un único país (Costa Rica), cuyas universidades presentan un perfil destacable en la mayoría de los aspectos evaluados.
+
+En primer lugar, se observa que este grupo tiene una puntuación promedio QS significativamente mayor que el promedio global (71.25 vs. 56.92), con un V-test de 1.99 y un valor p de 0.05, indicando una diferencia significativa al 10%.
+
+Además, la reputación académica (87.30) y la reputación entre empleadores (82.70) también superan considerablemente los promedios generales (62.05 y 61.80, respectivamente), con V-test de 1.76 y 1.72, y valores p de 0.08 y 0.09. Aunque no alcanzan significancia al 5%, sí son relevantes al nivel del 10%, evidenciando una percepción favorable tanto en el ámbito académico como laboral.
+
+Finalmente, el indicador QS.Ranking muestra un V-test negativo de -2.07 (p = 0.04), lo que indica que este país ocupa una mejor posición en el ranking (es decir, un valor numérico más bajo) que el promedio de los países del estudio (38.50 vs. 79.63), y esta diferencia es significativa incluso al nivel del 5%.
+
+En conjunto, el Grupo 4 representa un perfil sobresaliente, con universidades reconocidas por su calidad, tanto en evaluación global como en reputación académica y profesional, y que además ocupan posiciones destacadas en los rankings internacionales.
+
+### Grupo 5
 
 ```{r ca5, message=FALSE, warning=FALSE}
-desc1 <- as.data.frame(res.hcpc$desc.var$quanti[[5]])
-
+desc5 <- as.data.frame(res.hcpc$desc.var$quanti[[5]])
+desc5 <- round(desc5, 2)
 # Renombrar columnas con nombres más legibles
-colnames(desc1) <- c(
+colnames(desc5) <- c(
          # Nombre de la variable
   "V-test",           # Estadístico v-test
   "Media en Grupo 5", # Media dentro del grupo
@@ -546,7 +599,7 @@ colnames(desc1) <- c(
 )
 
 # Generar la tabla en LaTeX
-kable(desc1,
+kable(desc5,
       format   = "latex",
       booktabs = TRUE,
       caption  = "Características principales del Grupo 5 (ACP indicadores QS)",
@@ -555,14 +608,19 @@ kable(desc1,
 
 ```
 
+Análisis de las características principales del Grupo 5
+
+La Tabla 10 describe los indicadores más representativos del Grupo 5, conformado por Brasil y Puerto Rico. Este grupo se caracteriza por un perfil académico fuertemente vinculado a la formación investigativa y la productividad científica.
+
+El indicador más destacable es la proporción de docentes con doctorado, cuya media en el grupo (96.18%) es más del doble que el promedio global (43.49%). Esta diferencia es altamente significativa (V-test = 3.16, p = 0.00), lo que refleja un alto nivel de formación académica en las instituciones de estos países.
+
+Además, el grupo también presenta una mayor producción científica por docente, con un promedio de 62.10 artículos, frente a 25.93 a nivel general. Esta diferencia es significativa al 5% (V-test = 2.59, p = 0.01), lo que reafirma el perfil de investigación intensiva de este grupo.
+
+En contraste, se observa que la reputación entre empleadores es menor en comparación con el promedio (46.15 vs. 61.80), con un V-test de -1.89 y un valor p de 0.06. Aunque no es una diferencia significativa al 5%, sí lo es al 10%, lo que sugiere que, pese a su fortaleza académica y científica, estas universidades podrían mejorar su posicionamiento en el mercado laboral.
+
+En resumen, el Grupo 5 se distingue por contar con instituciones altamente cualificadas en términos de formación doctoral y productividad académica, aunque con una reputación entre empleadores relativamente más baja que el promedio regional.
 
 
-
-
-
-```{r fplt, message=FALSE, warning=FALSE}
-plot.HCPC(res.hcpc, axes = c(1,2), choice = "map")
-```
 
 ```{r dpl1, warning=FALSE, message=FALSE}
 plot.HCPC(res.hcpc, choice = "map", axes = c(1, 2), title = "Distribución de los grupos sobre el plano 1-2 (ACP indicadores QS)")
@@ -573,9 +631,6 @@ plot.HCPC(res.hcpc, choice = "map", axes = c(1, 2), title = "Distribución de lo
 plot.HCPC(res.hcpc, choice = "map", axes = c(3, 4), title = "Distribución de los grupos sobre el plano 3-4 (ACP indicadores QS)")
 ```
 
-```{r dpl5, warning=FALSE, message=FALSE}
-plot.HCPC(res.hcpc, choice = "map", axes = c(5, 6), title = "Distribución de los grupos sobre el plano 5-6 (ACP indicadores QS)")
-```
 
 
 ```{r dlg12, warning=FALSE, message=FALSE}
