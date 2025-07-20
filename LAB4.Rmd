@@ -621,17 +621,55 @@ En contraste, se observa que la reputación entre empleadores es menor en compar
 En resumen, el Grupo 5 se distingue por contar con instituciones altamente cualificadas en términos de formación doctoral y productividad académica, aunque con una reputación entre empleadores relativamente más baja que el promedio regional.
 
 
+## Distribución de los grupos en el plano factorial (ACP sobre indicadores QS)
+
 
 ```{r dpl1, warning=FALSE, message=FALSE}
 plot.HCPC(res.hcpc, choice = "map", axes = c(1, 2), title = "Distribución de los grupos sobre el plano 1-2 (ACP indicadores QS)")
 
 ```
 
+
+Distribución de los grupos en el plano factorial (ACP sobre indicadores QS)
+
+La Figura muestra la proyección de los países sobre los dos primeros componentes principales del Análisis de Componentes Principales (ACP), que explican conjuntamente un 61.06% de la variabilidad total de los datos (Dimensión 1: 36.39%, Dimensión 2: 24.67%). Esta visualización permite identificar claramente la separación de los grupos definidos mediante el análisis de conglomerados (clusters), lo que respalda la validez de la clasificación obtenida.
+
+Los países agrupados en el Grupo 5 (Brasil y Puerto Rico, en color celeste) se ubican en el extremo derecho del plano, lo que indica altos valores en los indicadores relacionados con la producción académica y formación de alto nivel, como el porcentaje de docentes con doctorado y el número de artículos por docente.
+
+En contraste, los países del Grupo 2 (Bolivia y Ecuador, en rosado) se sitúan en la región izquierda del gráfico, asociados a valores más bajos en los indicadores QS, particularmente en reputación y producción científica.
+
+El Grupo 3 (verde), conformado por Argentina, Colombia, Cuba, Chile, México y Perú, se concentra cerca del centro del plano, lo cual sugiere un perfil intermedio o equilibrado en cuanto a desempeño QS. Esta posición cercana al origen implica que estos países no presentan valores extremos en las dimensiones analizadas.
+
+Por su parte, el Grupo 4 (Costa Rica, en azul oscuro), aparece claramente separado hacia la parte superior del gráfico, reflejando puntuaciones elevadas en los indicadores de reputación académica y entre empleadores, así como en la puntuación general QS.
+
+Finalmente, el Grupo 1 (Panamá, Paraguay y Uruguay, en negro) se ubica en el cuadrante inferior izquierdo del plano, indicando valores bajos o moderados en la mayoría de los indicadores QS, sin destacar significativamente en ningún eje principal.
+
+En resumen, el gráfico evidencia una buena discriminación entre los grupos identificados, lo que refuerza la utilidad del ACP como herramienta exploratoria complementaria al análisis de conglomerados. Además, ofrece una representación visual clara del posicionamiento relativo de los países latinoamericanos según su desempeño en los indicadores QS.
+
 ```{r dpl3, warning=FALSE, message=FALSE}
 plot.HCPC(res.hcpc, choice = "map", axes = c(3, 4), title = "Distribución de los grupos sobre el plano 3-4 (ACP indicadores QS)")
 ```
 
+Distribución de los grupos en el plano factorial 3–4 (ACP sobre indicadores QS)
 
+La Figura presenta la distribución de los países latinoamericanos sobre el plano definido por la tercera y cuarta dimensiones principales del Análisis de Componentes Principales (ACP) aplicado a los indicadores QS. Estas dimensiones explican conjuntamente un 28.62% de la variabilidad total de los datos (Dimensión 3: 17.44%, Dimensión 4: 11.18%).
+
+Aunque estas dimensiones adicionales no capturan tanta varianza como las dos primeras, resultan útiles para observar patrones más sutiles en la diferenciación de los grupos. En este plano, también se visualiza una buena separación entre algunos clusters, lo cual refuerza la validez de la segmentación.
+
+El Grupo 2 (Bolivia y Ecuador, en rosado) se mantiene bien diferenciado, posicionándose en el cuadrante superior izquierdo, lo cual sugiere que presentan valores particulares en las dimensiones 3 y 4, posiblemente relacionados con indicadores específicos como la percepción entre empleadores o baja visibilidad internacional.
+
+El Grupo 5 (Brasil y Puerto Rico, en celeste) vuelve a destacarse, aunque ahora aparecen más dispersos a lo largo del eje horizontal. Puerto Rico se posiciona hacia la parte superior derecha, mientras Brasil se ubica hacia el extremo inferior derecho. Esto podría estar reflejando diferencias internas dentro del grupo en cuanto a aspectos secundarios de calidad académica o visibilidad.
+
+El Grupo 3 (Argentina, Colombia, Chile, Cuba, México, Perú y Venezuela, en verde) se concentra mayoritariamente en la región central izquierda del gráfico, con una ligera dispersión en el eje vertical. Esta distribución confirma nuevamente que estos países mantienen un perfil intermedio y relativamente homogéneo en las dimensiones secundarias analizadas.
+
+El Grupo 4 (Costa Rica, en azul oscuro) aparece más alejado del centro, ubicado en el cuadrante superior derecho. Este posicionamiento sugiere un comportamiento atípico o destacable del país en ciertos indicadores que no fueron tan visibles en las dos primeras dimensiones, reafirmando su singularidad en el contexto regional.
+
+El Grupo 1 (Panamá, Paraguay y Uruguay, en negro) muestra una mayor dispersión en este plano. Paraguay y Uruguay se ubican hacia el extremo derecho del gráfico, mientras Panamá se encuentra más cerca del centro. Esto podría indicar diferencias más marcadas dentro del grupo en las dimensiones analizadas, especialmente en aquellos indicadores que explican menor varianza global pero que siguen siendo relevantes para la diferenciación.
+
+En conjunto, esta proyección complementa la información observada en el plano 1–2, revelando matices adicionales en el perfil académico y de reputación QS de los países analizados. También permite observar qué países, dentro de un mismo grupo, presentan mayores similitudes o diferencias en los componentes menos dominantes del análisis.
+
+
+## Distribución de los grupos en el plano factorial
 
 ```{r dlg12, warning=FALSE, message=FALSE}
 fviz_cluster(res.hcpc,
@@ -653,6 +691,22 @@ fviz_cluster(res.hcpc,
     axis.text = element_text(size = 10)
   )
 ```
+Distribución de los grupos en el plano factorial 1–2 (ACP sobre indicadores QS)
+
+La figura presenta la proyección de los países latinoamericanos en el plano definido por las dos primeras componentes principales obtenidas del Análisis de Componentes Principales (ACP) sobre los indicadores QS. Este plano capta una porción significativa de la variabilidad total (61.1%), con la Dimensión 1 explicando el 36.4% y la Dimensión 2 el 24.7%. Esta representación permite observar de manera clara la agrupación y diferenciación de los países en función de los indicadores considerados.
+
+El Grupo 5 (Brasil y Puerto Rico, en verde claro con bordes) se destaca por estar claramente separado del resto, ocupando el extremo derecho del gráfico en ambas dimensiones. Esta ubicación sugiere que estos países presentan los valores más altos en los indicadores más representativos del primer componente, posiblemente relacionados con reputación académica, empleabilidad o citación internacional.
+
+El Grupo 4 (Costa Rica, en rosado) se encuentra aislado en el cuadrante superior derecho. Su posición tan alejada del resto indica un perfil único entre los países analizados. Costa Rica probablemente sobresale en algunos indicadores específicos que combinan alta percepción académica y empleabilidad, lo que justifica su agrupación independiente.
+
+El Grupo 3 (en azul violeta), compuesto por países como Argentina, Colombia, Chile, México, Venezuela, Perú, Cuba y en parte Uruguay, se concentra en la zona central del gráfico, formando un polígono más compacto. Esta distribución sugiere que estos países tienen un desempeño intermedio y homogéneo en los principales indicadores QS, sin presentar extremos muy altos ni bajos.
+
+El Grupo 2 (Bolivia y Ecuador, en naranja) se posiciona en la parte inferior izquierda del gráfico, indicando bajos valores en los componentes principales. Esta ubicación podría reflejar menores niveles de reputación internacional, visibilidad académica o citación científica.
+
+El Grupo 1 (Paraguay, Uruguay y Panamá, en verde oscuro) aparece en el cuadrante izquierdo, más cercano al origen y ligeramente disperso. Aunque relativamente cercanos entre sí, presentan un perfil algo más moderado respecto a los indicadores QS, sin destacar especialmente en los factores principales pero manteniéndose diferenciados de los extremos.
+
+En conjunto, esta representación permite observar con claridad la diferenciación estructural entre los grupos formados. Los clústeres reflejan tanto similitudes como contrastes importantes entre los países, revelando una segmentación coherente basada en características académicas y de percepción internacional.
+
 
 ```{r dlg34, warning=FALSE, message=FALSE}
 fviz_cluster(res.hcpc,
@@ -674,7 +728,6 @@ fviz_cluster(res.hcpc,
     axis.text = element_text(size = 10)
   )
 ```
-
 
 
 
